@@ -1,0 +1,590 @@
+Index: e-smith-imap/createlinks
+diff -u e-smith-imap/createlinks:1.6 e-smith-imap/createlinks:1.7
+--- e-smith-imap/createlinks:1.6	Thu Jan 20 17:05:27 2005
++++ e-smith-imap/createlinks	Wed Mar 16 20:45:37 2005
+@@ -1,32 +1,9 @@
+ #!/usr/bin/perl -w
+ 
+-sub safe_symlink {
+-    my ($from, $to) = @_;
+-    use File::Basename;
+-    use File::Path;
+-    mkpath(dirname($to));
+-    unlink($to);
+-    symlink($from, $to) or die "Can't create symlink from $from to $to: $!";
+-}
+-
+-sub service_link_enhanced
+-{
+-    my ($service, $level, $rc) = @_;
++use esmith::Build::CreateLinks qw(:all);
+ 
+-    $rc = 7 unless defined $rc;
+-    $level =~ /[^\d]/ or $level = "S${level}";
+-    safe_symlink("/etc/rc.d/init.d/e-smith-service",
+-        "root/etc/rc.d/rc${rc}.d/${level}${service}");
+-}
+-
+-sub event_link
+-{
+-    my ($action, $event, $level) = @_;
+-
+-	unlink "root/etc/e-smith/events/${event}/S${level}${action}";
+-    safe_symlink("../actions/${action}",
+-	"root/etc/e-smith/events/${event}/S${level}${action}");
+-}
++my $imap = "/var/service/imap";
++my $imaps = "/var/service/imaps";
+ 
+ foreach my $event (qw(email-update remoteaccess-update bootstrap-console-save
+ 			network-delete network-create ldap-update domain-modify))
+@@ -34,6 +11,29 @@
+     event_link("imap-conf", $event, "55");
+ }
+ 
++templates2events("/etc/dovecot.conf", qw(bootstrap-console-save console-save));
++templates2events("$imap/ssl/imapd.pem",
++			qw(bootstrap-console-save ldap-update));
++templates2events("$imap/runenv/ulimitdata",
++			qw(bootstrap-console-save email-update));
++templates2events("$imap/runenv/concurrency",
++			qw(bootstrap-console-save email-update));
++
++foreach my $event (qw(
++    bootstrap-console-save
++    email-update
++    network-create
++    network-delete
++    ))
++{
++    templates2events("$imap/peers/0", $event);
++    templates2events("$imap/peers/local", $event);
++    safe_symlink("sigusr1", "root/etc/e-smith/events/$event/services2adjust/imap");
++    templates2events("$imaps/peers/0", $event);
++    templates2events("$imaps/peers/local", $event);
++    safe_symlink("sigusr1", "root/etc/e-smith/events/$event/services2adjust/imaps");
++}
++
+ foreach my $event (qw(post-upgrade))
+ {
+     event_link("imap-relocate-maildirs", $event, "05");
+@@ -44,3 +44,8 @@
+ service_link_enhanced("imap", "K45", "6");
+ service_link_enhanced("imap", "K45", "0");
+ service_link_enhanced("imap", "K45", "1");
++safe_symlink("daemontools", "root/etc/rc.d/init.d/imaps");
++service_link_enhanced("imaps", "S55", "7");
++service_link_enhanced("imaps", "K45", "6");
++service_link_enhanced("imaps", "K45", "0");
++service_link_enhanced("imaps", "K45", "1");
+Index: e-smith-imap/e-smith-imap.spec
+diff -u /dev/null e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort:1.1
+--- /dev/null	Wed Mar 16 20:49:59 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
++143
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort
+diff -u /dev/null e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort:1.1
+--- /dev/null	Wed Mar 16 20:49:59 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
++993
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.2
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.1	Thu Jan 20 17:05:27 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status	Wed Mar 16 20:45:37 2005
+@@ -1 +1 @@
+-disabled
++enabled
+Index: e-smith-imap/root/etc/e-smith/events/actions/imap-conf
+diff -u e-smith-imap/root/etc/e-smith/events/actions/imap-conf:1.2 e-smith-imap/root/etc/e-smith/events/actions/imap-conf:removed
+--- e-smith-imap/root/etc/e-smith/events/actions/imap-conf:1.2	Thu Jan 20 17:05:27 2005
++++ e-smith-imap/root/etc/e-smith/events/actions/imap-conf	Wed Dec 31 19:00:00 1969
+@@ -1,44 +0,0 @@
+-#!/usr/bin/perl -w
+-
+-#----------------------------------------------------------------------
+-# copyright (C) 2003 Mitel Networks Corporation
+-# 
+-# This program is free software; you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation; either version 2 of the License, or
+-# (at your option) any later version.
+-# 		
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-# 		
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+-# 
+-# Technical support for this program is available from Mitel Networks 
+-# Please visit our web site www.mitel.com/sme/ for details.
+-#----------------------------------------------------------------------
+-
+-use strict;
+-use esmith::templates;
+-
+-processTemplate({
+-		    TEMPLATE_PATH => "/etc/dovecot.conf",
+-		});
+-
+-chdir "/var/service/imap" or die "Couldn't chdir: $!";
+-
+-my $tcprules = "imap.tcprules";
+-
+-foreach my $file (qw(ssl/imapd.pem runenv/ulimitdata runenv/concurrency), $tcprules)
+-{
+-    processTemplate({
+-			TEMPLATE_PATH => "/var/service/imap/$file",
+-		    });
+-}
+-
+-open(STDIN, "<$tcprules") or die "Couldn't open rules file $tcprules: $!";
+-exec("/usr/local/bin/tcprules", "${tcprules}.cdb", "${tcprules}.tmp");
+-die("Couldn't exec /usr/local/bin/tcprules: $!");
+Index: e-smith-imap/root/etc/e-smith/events/actions/imap-relocate-maildirs
+diff -u e-smith-imap/root/etc/e-smith/events/actions/imap-relocate-maildirs:1.5 e-smith-imap/root/etc/e-smith/events/actions/imap-relocate-maildirs:1.6
+--- e-smith-imap/root/etc/e-smith/events/actions/imap-relocate-maildirs:1.5	Wed Jul  9 15:03:44 2003
++++ e-smith-imap/root/etc/e-smith/events/actions/imap-relocate-maildirs	Wed Mar 16 20:45:37 2005
+@@ -1,7 +1,7 @@
+ #!/usr/bin/perl -w
+ 
+ #----------------------------------------------------------------------
+-# copyright (C) 1999-2003 Mitel Networks Corporation
++# copyright (C) 1999-2005 Mitel Networks Corporation
+ # 
+ # This program is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+@@ -25,6 +25,7 @@
+ use esmith::AccountsDB;
+ use User::pwent;
+ use File::Find;
++use File::Glob;
+ 
+ my $event = $ARGV[0] || 'Unknown';
+ 
+@@ -41,81 +42,34 @@
+ 
+     chdir $pwent->dir or die "Couldn't chdir $pwent->dir:$!\n";
+ 
+-    # First move any toplevel Maildirs into Mail.
+-    if (-d "Mail/new" and -d "Mail/cur" and -d "Mail/tmp")
+-    {
+-	warn "$user already had a maildir called Mail\n";
+-
+-	unless ( rename("Mail", "Mail.relocated") )
+-	{
+-	    warn "Conflict for $user: Couldn't rename Mail to Mail.relocated\n";
+-	}
+-    }
+-
+-    unless (-d "Mail")
+-    {
+-	unless (mkdir "Mail")
+-	{
+-	    warn "Couldn't mkdir Mail for $user\n";
+-	    next;
+-	}
+-	chown $pwent->uid, $pwent->gid, "Mail";
+-	chmod 0700, "Mail";
+-    }
+-
+-    foreach my $file ( <*> )
+-    {
+-	next if ($file eq "Maildir");
+-	next unless -d $file and
+-	    -d "$file/new" and -d "$file/cur" and -d "$file/tmp";
+-	$::maildirs{$file} = "./Maildir/;$file";
+-
+-	my $newname = $file;
+-
+-	if ( -e "Mail/$newname" )
+-	{
+-	    $newname .= ".relocated";
+-
+-	    if ( -e "Mail/$newname" )
+-	    {
+-		$newname .= "-" . time;
+-	    }
+-
+-	    if ( -e "Mail/$newname" )
+-	    {
+-		warn "Conflict for $user: Can't determine new name for $file\n";
+-		next;
+-	    }
+-	}
+-
+-	warn "Relocating ~$user/$file to Mail/$newname\n";
+-	rename $file, "Mail/$newname" 
+-	or warn "Couldn't rename ~$user/$file to Mail/$newname:$!\n";
+-    }
+-
+     %::maildirs = ();
+-    # Go and find maildirs inside ./Mail we wish to relocate
+-    find({ wanted => \&wanted, no_chdir => 1 }, './Mail');
++    # Go and find maildirs we wish to relocate
++    find({ wanted => \&wanted, no_chdir => 1 }, 
++	'Maildir', 'Mail',
++	map { s/\/cur//; $_ } <./*/cur>
++	);
+ 
+     # We do a reverse sort here so that we are doing a depth first
+     # move of directories
+     foreach my $here (reverse sort keys %::maildirs)
+     {
+ 	my $there = $::maildirs{$here};
+-	if (-d $there)
+-	{
+-	    warn("Already a directory $there - not moving $here.\n");
+-	}
+-	else
++	if (-e "$there")
+ 	{
+-	    warn "Moving $here to $there\n";
+-	    rename $here, $there
+-		or warn("Could not rename $here to $there: $!\n");
++	    $there .= "-" . time if (-e "$there");
++	    if (-e "$there")
++	    {
++		warn "Conflict for $user: Can't determine new name for $here\n";
++		next;
++	    }
+ 	}
++	warn "Moving $here to $there\n";
++	rename $here, $there
++	    or warn("Could not rename $here to $there: $!\n");
+     }
+ 
+     # Now make sure that we have a junkmail mailbox
+-    my $prefix = "Maildir/;junkmail";
++    my $prefix = "Maildir/.junkmail";
+     unless (-d "$prefix" &&
+ 	    -d "$prefix/tmp" &&
+ 	    -d "$prefix/new" &&
+@@ -145,7 +99,7 @@
+ 	    # NOTREACHED
+ 	}
+     }
+-    if (-f ".mailboxlist" && ! -f "Maildir/.subscriptions")
++    if (-f ".mailboxlist" || -f "Maildir/.subscriptions")
+     {
+ 	my $pid = fork;
+ 	die "Could not fork in $ARGV[0]" unless defined $pid;
+@@ -158,18 +112,27 @@
+ 	    $) = $pwent->gid;
+ 	    $> = $pwent->uid;
+ 	    umask 077;
+-	    open (OSUBS, "<.mailboxlist") or
+-		die "Could not open mailboxlist file: $!\n";
++	    if (-f ".mailboxlist")
++	    {
++		open (OSUBS, "<.mailboxlist") or
++		    die "Could not open mailboxlist file: $!\n";
++	    }
++	    else
++	    {
++		open (OSUBS, "<Maildir/.subscriptions") or
++		    die "Could not open mailboxlist file: $!\n";
++	    }
++	    my @subs = <OSUBS>;
++	    close OSUBS;
+ 	    open (NSUBS, ">Maildir/.subscriptions") or
+ 		die "Could not open subscriptions file: $!\n";
+-	    while (<OSUBS>)
++	    foreach (@subs)
+ 	    {
+ 		s/^Mail\///;
+-		s/\//;/g;
++		s/[\/;]/./g;
+ 		print NSUBS;
+ 	    }
+ 	    close NSUBS;
+-	    close OSUBS;
+ 	    unlink ".mailboxlist";
+ 	    exit 0;
+ 	    # NOTREACHED
+@@ -182,7 +145,7 @@
+ {
+     my $here = $_;
+     # Don't follow symlinks or descend into ./Maildir
+-    if (-l $here || $here eq "./Maildir")
++    if (-l $here || $here eq "./Maildir" || $here eq "./files")
+     {
+ 	#print "Pruning at $here\n";
+ 	$File::Find::prune = 1;
+@@ -194,9 +157,10 @@
+ 	my $there = $here;
+ 	$there =~ s/^\.\///;
+ 	$there =~ s/^Mail\///;
+-	$there =~ s/\//;/g;
++	$there =~ s/[\/;]/./g;
++	$there =~ s/^[;\.]//;
+ 	    next if $here eq $there;	# We shouldn't get here
+ 	# Save a notion of where we will move this maildir
+-	$::maildirs{$here} = "./Maildir/;$there";
++	$::maildirs{$here} = "./Maildir/.$there";
+     }
+ }
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/10localhost
+diff -u e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/10localhost:1.2 e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/10localhost:removed
+--- e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/10localhost:1.2	Fri Nov 28 17:11:17 2003
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/10localhost	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-127.0.0.1:allow,CVM_ACCOUNT_SPLIT_CHARS="",CVM_SASL_PLAIN="cvm-local:/var/lib/cvm/cvm-unix-local.socket"
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/20localNetworks
+diff -u e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/20localNetworks:1.2 e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/20localNetworks:removed
+--- e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/20localNetworks:1.2	Fri Nov 28 17:11:17 2003
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/20localNetworks	Wed Dec 31 19:00:00 1969
+@@ -1,23 +0,0 @@
+-{
+-    use esmith::util;
+-
+-    my @prefixes = esmith::util::computeAllLocalNetworkPrefixes($LocalIP,
+-                                                                $LocalNetmask);
+-
+-    require esmith::NetworksDB;
+-    my $n = esmith::NetworksDB->open;
+-    foreach my $network ($n->get_all_by_prop(type => 'network'))
+-    {
+-	push(@prefixes,
+-	    esmith::util::computeAllLocalNetworkPrefixes(
+-		$network->key, $network->prop('Mask')));
+-    }
+-
+-    foreach my $prefix ( @prefixes )
+-    {
+-	my $dot = ( $prefix =~ /\d+\.\d+\.\d+\.\d+/ ) ? '' : '.';
+-
+-	$OUT .= $prefix . $dot .
+-	    qq(:allow,CVM_ACCOUNT_SPLIT_CHARS="",CVM_SASL_PLAIN="cvm-local:/var/lib/cvm/cvm-unix-local.socket"\n);
+-    }
+-}
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/90default
+diff -u e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/90default:1.2 e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/90default:removed
+--- e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/90default:1.2	Fri Nov 28 17:11:17 2003
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/imap.tcprules/90default	Wed Dec 31 19:00:00 1969
+@@ -1,11 +0,0 @@
+-:{
+-    my $imap = $DB->get('imap');
+-    return "deny" unless defined $imap;
+-
+-    my $access = $imap->prop('access') || "private";
+-    return ($access eq "public") ?
+-	qq(allow,) .
+-	    qq(CVM_ACCOUNT_SPLIT_CHARS="",) .
+-	    qq(CVM_SASL_PLAIN="cvm-local:/var/lib/cvm/cvm-unix-local.socket")
+-	: "deny"
+-}
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_ACCOUNT_SPLIT_CHARS
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_ACCOUNT_SPLIT_CHARS:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_ACCOUNT_SPLIT_CHARS	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++CVM_ACCOUNT_SPLIT_CHARS=
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_SASL_PLAIN
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_SASL_PLAIN:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/CVM_SASL_PLAIN	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++CVM_SASL_PLAIN=cvm-local:/var/lib/cvm/cvm-unix-local.socket
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/MAILDIR_COPY_WITH_HARDLINKS
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/MAILDIR_COPY_WITH_HARDLINKS:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/0/MAILDIR_COPY_WITH_HARDLINKS	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++MAILDIR_COPY_WITH_HARDLINKS=
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_ACCOUNT_SPLIT_CHARS
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_ACCOUNT_SPLIT_CHARS:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_ACCOUNT_SPLIT_CHARS	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++CVM_ACCOUNT_SPLIT_CHARS=
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_SASL_PLAIN
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_SASL_PLAIN:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/CVM_SASL_PLAIN	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++CVM_SASL_PLAIN=cvm-local:/var/lib/cvm/cvm-unix-local.socket
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/MAILDIR_COPY_WITH_HARDLINKS
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/MAILDIR_COPY_WITH_HARDLINKS:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/peers/local/MAILDIR_COPY_WITH_HARDLINKS	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
+++MAILDIR_COPY_WITH_HARDLINKS=
+Index: e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imap')->prop('access') eq "private") ? "000" : "0644"
+Index: e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/local
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/local:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/local	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1 @@
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imap')->prop('status') eq "enabled") ? "0644" : "0000"
+Index: e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1,2 @@
++TEMPLATE_PATH="/var/service/imap/peers/0"
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imaps')->prop('access') eq "private") ? "000" : "0644"
+Index: e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/local
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/local:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/local	Wed Mar 16 20:45:37 2005
+@@ -0,0 +1,2 @@
++TEMPLATE_PATH="/var/service/imap/peers/local"
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imaps')->prop('status') eq "enabled") ? "0644" : "0000"
+Index: e-smith-imap/root/var/service/imap/run
+diff -u e-smith-imap/root/var/service/imap/run:1.8 e-smith-imap/root/var/service/imap/run:1.9
+--- e-smith-imap/root/var/service/imap/run:1.8	Fri Dec 24 14:52:21 2004
++++ e-smith-imap/root/var/service/imap/run	Wed Mar 16 20:45:37 2005
+@@ -9,14 +9,14 @@
+     /bin/dd if=/dev/urandom of=./ssl/seed bs=1k count=1
+ exec \
+   softlimit -m "${ulimitdata:-20000000}" \
+-    tcpserver -d \
+-      -H \
+-      -R \
+-      -v \
+-      -X \
+-      -c "${concurrency:-20}" \
+-      -x imap.tcprules.cdb \
+-      0 imap \
++    /usr/bin/tcpsvd \
++    -v \
++    -i ./peers \
++    -c ${INSTANCES:-400} \
++    -C ${PER_IP_INSTANCES:-6}:'421 per host concurrency limit reached\r\n' \
++    -l ${LOCALNAME:-0} \
++    ${LISTENIP:-0} \
++    ${PORT:-imap} \
+ 	makesock \
+ 	  stunnel \
+ 	    -/ ssl \
+Index: e-smith-imap/root/var/service/imap/control/1
+diff -u /dev/null e-smith-imap/root/var/service/imap/control/1:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/var/service/imap/control/1	Wed Mar 16 20:45:38 2005
+@@ -0,0 +1,28 @@
++#!/usr/bin/perl -w
++
++#----------------------------------------------------------------------
++# copyright (C) 2005 Mitel Networks Corporation
++# 
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++# 		
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++# 		
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
++# 
++# Technical support for this program is available from Mitel Networks 
++# Please visit our web site www.mitel.com/sme/ for details.
++#----------------------------------------------------------------------
++
++use esmith::tcpsvd;
++
++esmith::tcpsvd::configure_peers('imap');
++
++exit(0);
+Index: e-smith-imap/root/var/service/imaps/run
+diff -u /dev/null e-smith-imap/root/var/service/imaps/run:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/var/service/imaps/run	Wed Mar 16 20:45:38 2005
+@@ -0,0 +1,18 @@
++#! /bin/sh
++
++exec 2>&1
++
++[ -e ./runenv ] && . ./runenv
++
++exec  softlimit -m "${ulimitdata:-20000000}" \
++    /usr/bin/tcpsvd \
++	-v \
++	-i ./peers \
++	-c ${INSTANCES:-400} \
++	-C ${PER_IP_INSTANCES:-6}:'421 per host concurrency limit reached\r\n' \
++	-l ${LOCALNAME:-0} \
++	${LISTENIP:-0} \
++	${PORT:-imaps} \
++	    sslio -vv -/ ../imap/ssl -C imapd.pem -u stunnel \
++		/usr/bin/imapfront-auth \
++		    "${imapdpath:-/usr/libexec/dovecot/imap}"
+Index: e-smith-imap/root/var/service/imaps/control/1
+diff -u /dev/null e-smith-imap/root/var/service/imaps/control/1:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/var/service/imaps/control/1	Wed Mar 16 20:45:38 2005
+@@ -0,0 +1,28 @@
++#!/usr/bin/perl -w
++
++#----------------------------------------------------------------------
++# copyright (C) 2005 Mitel Networks Corporation
++# 
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++# 		
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++# 		
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
++# 
++# Technical support for this program is available from Mitel Networks 
++# Please visit our web site www.mitel.com/sme/ for details.
++#----------------------------------------------------------------------
++
++use esmith::tcpsvd;
++
++esmith::tcpsvd::configure_peers('imaps');
++
++exit(0);
+Index: e-smith-imap/root/var/service/imaps/log/run
+diff -u /dev/null e-smith-imap/root/var/service/imaps/log/run:1.1
+--- /dev/null	Wed Mar 16 20:50:00 2005
++++ e-smith-imap/root/var/service/imaps/log/run	Wed Mar 16 20:45:38 2005
+@@ -0,0 +1,27 @@
++#!/bin/sh
++
++#----------------------------------------------------------------------
++# copyright (C) 2004 Mitel Networks Corporation
++# 
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++# 		
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++# 		
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
++# 
++# Technical support for this program is available from Mitel Networks 
++# Please visit our web site www.mitel.com/sme/ for details.
++#----------------------------------------------------------------------
++exec					\
++    /usr/local/bin/setuidgid imaplog	\
++    /usr/local/bin/multilog t s5000000	\
++    /var/log/imaps
++

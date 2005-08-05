@@ -1,0 +1,13 @@
+Index: e-smith-imap/e-smith-imap.spec
+diff -u e-smith-imap/root/var/service/imap/run:1.10 e-smith-imap/root/var/service/imap/run:1.11
+--- e-smith-imap/root/var/service/imap/run:1.10	Tue Mar 29 12:07:04 2005
++++ e-smith-imap/root/var/service/imap/run	Thu Jun 23 20:03:33 2005
+@@ -20,7 +20,7 @@
+     ${LISTENIP:-0} \
+     ${PORT:-imap} \
+ 	makesock \
+-	  stunnel \
++	  stunnel-tls \
+ 	    -/ ssl \
+ 	    -s "$SSLUID" \
+ 	    -g "$SSLGID" \

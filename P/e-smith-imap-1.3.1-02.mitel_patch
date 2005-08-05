@@ -1,0 +1,166 @@
+Index: e-smith-imap/createlinks
+diff -u e-smith-imap/createlinks:1.5 e-smith-imap/createlinks:1.6
+--- e-smith-imap/createlinks:1.5	Wed Aug 27 16:05:55 2003
++++ e-smith-imap/createlinks	Thu Jan 20 17:05:27 2005
+@@ -28,13 +28,8 @@
+ 	"root/etc/e-smith/events/${event}/S${level}${action}");
+ }
+ 
+-foreach my $event (qw(bootstrap-console-save ldap-update domain-modify))
+-{
+-    event_link("imap-pem-cert", $event, "95");
+-}
+-
+ foreach my $event (qw(email-update remoteaccess-update bootstrap-console-save
+-			network-delete network-create))
++			network-delete network-create ldap-update domain-modify))
+ {
+     event_link("imap-conf", $event, "55");
+ }
+Index: e-smith-imap/e-smith-imap.spec
+diff -u /dev/null e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access:1.1
+--- /dev/null	Thu Jan 20 17:06:00 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1 @@
++private
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status
+diff -u /dev/null e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.1
+--- /dev/null	Thu Jan 20 17:06:00 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1 @@
++disabled
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type
+diff -u /dev/null e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type:1.1
+--- /dev/null	Thu Jan 20 17:06:00 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1 @@
++service
+Index: e-smith-imap/root/etc/e-smith/events/actions/imap-conf
+diff -u e-smith-imap/root/etc/e-smith/events/actions/imap-conf:1.1 e-smith-imap/root/etc/e-smith/events/actions/imap-conf:1.2
+--- e-smith-imap/root/etc/e-smith/events/actions/imap-conf:1.1	Mon Jun 23 18:44:44 2003
++++ e-smith-imap/root/etc/e-smith/events/actions/imap-conf	Thu Jan 20 17:05:27 2005
+@@ -32,7 +32,7 @@
+ 
+ my $tcprules = "imap.tcprules";
+ 
+-foreach my $file (qw(runenv/ulimitdata runenv/concurrency), $tcprules)
++foreach my $file (qw(ssl/imapd.pem runenv/ulimitdata runenv/concurrency), $tcprules)
+ {
+     processTemplate({
+ 			TEMPLATE_PATH => "/var/service/imap/$file",
+Index: e-smith-imap/root/etc/e-smith/events/actions/imap-pem-cert
+diff -u e-smith-imap/root/etc/e-smith/events/actions/imap-pem-cert:1.4 e-smith-imap/root/etc/e-smith/events/actions/imap-pem-cert:removed
+--- e-smith-imap/root/etc/e-smith/events/actions/imap-pem-cert:1.4	Thu Apr 17 13:29:42 2003
++++ e-smith-imap/root/etc/e-smith/events/actions/imap-pem-cert	Wed Dec 31 19:00:00 1969
+@@ -1,62 +0,0 @@
+-#!/usr/bin/perl -w
+-
+-#----------------------------------------------------------------------
+-# copyright (C) 2002 Mitel Networks Corporation
+-# 
+-# This program is free software; you can redistribute it and/or modify
+-# it under the terms of the GNU General Public License as published by
+-# the Free Software Foundation; either version 2 of the License, or
+-# (at your option) any later version.
+-# 		
+-# This program is distributed in the hope that it will be useful,
+-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-# GNU General Public License for more details.
+-# 		
+-# You should have received a copy of the GNU General Public License
+-# along with this program; if not, write to the Free Software
+-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+-# 
+-# Technical support for this program is available from Mitel Networks 
+-# Please visit our web site www.mitel.com/sme/ for details.
+-#----------------------------------------------------------------------
+-package esmith;
+-
+-use strict;
+-use Errno;
+-use esmith::util;
+-use esmith::ConfigDB;
+-use FileHandle;
+-use File::Copy;
+-
+-# Create IMAP pem certificate file, essentially by concatenating the
+-# key and certificate files used by http SSL.
+-
+-my $conf = esmith::ConfigDB->open();
+-my $domain = $conf->get('DomainName')->value || "localdomain";
+-my $hostname = $conf->get('SystemName')->value || "localhost";
+-
+-my $key = $conf->get('modSSL')->prop('key') ||
+-	    "/home/e-smith/ssl.key/$hostname.$domain.key";
+-
+-my $crt = $conf->get('modSSL')->prop('crt') ||
+-	    "/home/e-smith/ssl.crt/$hostname.$domain.crt";
+-
+-chdir "/var/service/imap/ssl"
+-    or die "Could not chdir to /var/service/imap/ssl: $!";
+-
+-my $pemfile = "imapd.pem";
+-my $tempfile = "$pemfile.$$";
+-my $pem = new FileHandle "> $tempfile";
+-die "Couldn't open temp pem cert file: $!" unless defined $pem;
+-
+-copy($key, $pem) or die("Error writing key to pem cert file: $!");
+-print $pem "\n" or die("Error writing separator to pem cert file: $!");
+-copy($crt, $pem) or die("Error writing crt to pem cert file: $!");
+-$pem->close or die("Error closing pem cert file: $!");
+-chmod 0640, $tempfile;
+-esmith::util::chownFile('root', 'stunnel', $tempfile);
+-rename("$tempfile", "$pemfile")
+-    or die "Error replacing pem cert file: $!";
+-
+-exit (0);
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/20key
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/20key:1.1
+--- /dev/null	Thu Jan 20 17:06:01 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/20key	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1,14 @@
++{
++    my $domain = $DomainName || "localdomain";
++    my $hostname = $SystemName || "localhost";
++    $OUT = '';
++
++    my $key = $modSSL{'key'} ||
++		"/home/e-smith/ssl.key/$hostname.$domain.key";
++    open(KEY, $key) or die "Could not open key file: $!";
++    while (<KEY>)
++    {
++	$OUT .= $_;
++    }
++    close KEY;
++}
+Index: e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/40crt
+diff -u /dev/null e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/40crt:1.1
+--- /dev/null	Thu Jan 20 17:06:01 2005
++++ e-smith-imap/root/etc/e-smith/templates/var/service/imap/ssl/imapd.pem/40crt	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1,13 @@
++{
++    my $domain = $DomainName || "localdomain";
++    my $hostname = $SystemName || "localhost";
++
++    my $crt = $modSSL{'crt'} ||
++		"/home/e-smith/ssl.crt/$hostname.$domain.crt";
++    open(CRT, $crt) or die "Could not open crt file: $!";
++    while (<CRT>)
++    {
++	$OUT .= $_;
++    }
++    close CRT;
++}
+Index: e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITIES
+diff -u e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITIES:1.2 e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITIES:removed
+--- e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITIES:1.2	Fri Dec 24 14:52:21 2004
++++ e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITIES	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-"SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
+Index: e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITY
+diff -u /dev/null e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITY:1.1
+--- /dev/null	Thu Jan 20 17:06:01 2005
++++ e-smith-imap/root/var/service/imap/runenv/IMAP_CAPABILITY	Thu Jan 20 17:05:27 2005
+@@ -0,0 +1 @@
++"AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
