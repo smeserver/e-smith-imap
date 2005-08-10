@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.3.1
-%define release 11
+%define release 11sme01
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -16,6 +16,7 @@ Patch3: e-smith-imap-1.3.1-06.mitel_patch
 Patch4: e-smith-imap-1.3.1-07.mitel_patch
 Patch5: e-smith-imap-1.3.1-08.mitel_patch
 Patch6: e-smith-imap-1.3.1-11.mitel_patch
+Patch7: e-smith-imap-1.3.1-db.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -23,6 +24,7 @@ Requires: ipsvd
 Requires: stunnel-tls
 Requires: mailfront
 Requires: dovecot
+Requires: e-smith-email
 Requires: e-smith-cvm-unix-local
 Requires: e-smith-lib >= 1.15.1-33
 Obsoletes: imap
@@ -38,6 +40,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Wed Aug 10 2005 Shad L. Lords <slords@mail.com>
+- [1.3.1-11sme01]
+- Move db entries to e-smith-email [SF: 1256055]
+
 * Thu Jun 23 2005 Charlie Brady <charlieb@e-smith.com>
 - [1.3.1-11]
 - Switch to using stunnel-tls package. [SF: 1225972]
@@ -289,6 +295,7 @@ Module for configuring the IMAP server
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 perl createlinks
