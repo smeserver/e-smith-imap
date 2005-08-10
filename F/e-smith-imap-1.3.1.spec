@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.3.1
-%define release 11sme01
+%define release 11sme02
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -17,6 +17,7 @@ Patch4: e-smith-imap-1.3.1-07.mitel_patch
 Patch5: e-smith-imap-1.3.1-08.mitel_patch
 Patch6: e-smith-imap-1.3.1-11.mitel_patch
 Patch7: e-smith-imap-1.3.1-db.patch
+Patch8: e-smith-imap-1.3.1-action.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -40,6 +41,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Wed Aug 10 2005 Shad L. Lords <slords@mail.com>
+- [1.3.1-11sme02]
+- Move relocate imap folders action to e-smith-email too.
+
 * Wed Aug 10 2005 Shad L. Lords <slords@mail.com>
 - [1.3.1-11sme01]
 - Move db entries to e-smith-email [SF: 1256055]
@@ -296,6 +301,7 @@ Module for configuring the IMAP server
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 perl createlinks
