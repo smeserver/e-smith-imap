@@ -1,0 +1,48 @@
+Index: e-smith-imap/e-smith-imap.spec
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort:1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort:1.1	Wed Mar 16 20:45:37 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/TCPPort	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-143
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/access
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/access:1.1.1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/access:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/access:1.1.1.1	Fri Mar 21 11:00:39 2003
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/access	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-private
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/status
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/status:1.1.1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/status:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/status:1.1.1.1	Fri Mar 21 11:00:39 2003
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/status	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-enabled
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/type
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/type:1.1.1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/type:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/type:1.1.1.1	Fri Mar 21 11:00:39 2003
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imap/type	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-service
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort:1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort:1.1	Wed Mar 16 20:45:37 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-993
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access:1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access:1.1	Thu Jan 20 17:05:27 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/access	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-private
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.2 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status:1.2	Wed Mar 16 20:45:37 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/status	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-enabled
+Index: e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type
+diff -u e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type:1.1 e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type:removed
+--- e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type:1.1	Thu Jan 20 17:05:27 2005
++++ e-smith-imap/root/etc/e-smith/db/configuration/defaults/imaps/type	Wed Dec 31 19:00:00 1969
+@@ -1 +0,0 @@
+-service
