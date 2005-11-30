@@ -1,0 +1,15 @@
+Index: e-smith-imap/e-smith-imap.spec
+diff -u e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0:1.1 e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0:1.2
+--- e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0:1.1	Wed Mar 16 20:45:37 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imap/peers/0	Wed Sep 21 11:52:52 2005
+@@ -1 +1 @@
+-PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imap')->prop('access') eq "private") ? "000" : "0644"
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imap')->prop('access') eq "public") ? "0644" : "000"
+Index: e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0
+diff -u e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0:1.1 e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0:1.2
+--- e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0:1.1	Wed Mar 16 20:45:37 2005
++++ e-smith-imap/root/etc/e-smith/templates.metadata/var/service/imaps/peers/0	Wed Sep 21 11:52:52 2005
+@@ -1,2 +1,2 @@
+ TEMPLATE_PATH="/var/service/imap/peers/0"
+-PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imaps')->prop('access') eq "private") ? "000" : "0644"
++PERMS=use esmith::ConfigDB; (esmith::ConfigDB->open_ro->get('imaps')->prop('access') eq "public") ? "0644" : "000"

@@ -1,0 +1,13 @@
+Index: e-smith-imap/e-smith-imap.spec
+diff -u e-smith-imap/root/var/service/imaps/run:1.1 e-smith-imap/root/var/service/imaps/run:1.2
+--- e-smith-imap/root/var/service/imaps/run:1.1	Wed Mar 16 20:45:38 2005
++++ e-smith-imap/root/var/service/imaps/run	Mon Oct 17 02:50:48 2005
+@@ -2,7 +2,7 @@
+ 
+ exec 2>&1
+ 
+-[ -e ./runenv ] && . ./runenv
++eval $(env - /usr/local/bin/envdir ./runenv /usr/bin/env)
+ 
+ exec  softlimit -m "${ulimitdata:-20000000}" \
+     /usr/bin/tcpsvd \

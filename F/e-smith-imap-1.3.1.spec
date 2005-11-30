@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.3.1
-%define release 12
+%define release 15
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -17,6 +17,8 @@ Patch4: e-smith-imap-1.3.1-07.mitel_patch
 Patch5: e-smith-imap-1.3.1-08.mitel_patch
 Patch6: e-smith-imap-1.3.1-11.mitel_patch
 Patch7: e-smith-imap-1.3.1-12.mitel_patch
+Patch8: e-smith-imap-1.3.1-13.mitel_patch
+Patch9: e-smith-imap-1.3.1-14.mitel_patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -39,6 +41,19 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Wed Nov 30 2005 Gordon Rowell <gordonr@gormand.com.au> 1.3.1-15
+- Bump release number only
+
+* Mon Oct 17 2005 Gordon Rowell <gordonr@e-smith.com>
+- [1.3.1-14]
+- Fix typo in env setup in imaps run script - Thanks Andre Duclos [SF: 1327437]
+
+* Wed Sep 21 2005 Charlie Brady <charlieb@e-smith.com>
+- [1.3.1-13]
+- Ensure that ./peers/0 is only readable if "access" is set to
+  "public". This change allows a "localhost" setting to do the
+  right thing. [SF: 1294719]
+
 * Wed Aug 10 2005 Shad Lords <slords@mail.com>
 - [1.3.1-12]
 - Move db entries to e-smith-email [SF: 1256055]
@@ -295,6 +310,8 @@ Module for configuring the IMAP server
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 perl createlinks
