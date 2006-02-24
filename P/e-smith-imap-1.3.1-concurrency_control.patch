@@ -1,0 +1,200 @@
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/createlinks mezzanine_patched_e-smith-imap-1.3.1/createlinks
+--- e-smith-imap-1.3.1/createlinks	2006-02-24 15:48:06.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/createlinks	2006-02-24 15:33:53.000000000 -0500
+@@ -6,10 +6,8 @@
+ my $imaps = "/var/service/imaps";
+ 
+ templates2events("/etc/dovecot.conf", qw(bootstrap-console-save console-save));
+-templates2events("$imap/runenv/ulimitdata",
+-			qw(bootstrap-console-save email-update));
+-templates2events("$imap/runenv/concurrency",
+-			qw(bootstrap-console-save email-update));
++templates2events("$imap/config", qw(bootstrap-console-save email-update));
++templates2events("$imaps/config", qw(bootstrap-console-save email-update));
+ 
+ foreach my $event (qw(
+     bootstrap-console-save
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/access mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/access
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/access	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/access	2006-02-24 15:47:53.000000000 -0500
+@@ -0,0 +1 @@
++private
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimit mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimit
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimit	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimit	2006-02-24 14:54:52.000000000 -0500
+@@ -0,0 +1 @@
++400
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimitPerIP mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimitPerIP
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimitPerIP	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/ConcurrencyLimitPerIP	2006-02-24 14:55:00.000000000 -0500
+@@ -0,0 +1 @@
++6
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/status mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/status
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/status	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/status	2006-02-24 15:47:53.000000000 -0500
+@@ -0,0 +1 @@
++enabled
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/TCPPort mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/TCPPort
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/TCPPort	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/TCPPort	2006-02-24 15:47:53.000000000 -0500
+@@ -0,0 +1 @@
++143
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/type mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/type
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/type	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imap/type	2006-02-24 15:47:53.000000000 -0500
+@@ -0,0 +1 @@
++service
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/access mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/access
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/access	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/access	2006-02-24 15:48:00.000000000 -0500
+@@ -0,0 +1 @@
++private
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimit mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimit
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimit	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimit	2006-02-24 14:55:10.000000000 -0500
+@@ -0,0 +1 @@
++400
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimitPerIP mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimitPerIP
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimitPerIP	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/ConcurrencyLimitPerIP	2006-02-24 14:55:10.000000000 -0500
+@@ -0,0 +1 @@
++6
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/status mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/status
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/status	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/status	2006-02-24 15:48:00.000000000 -0500
+@@ -0,0 +1 @@
++enabled
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/TCPPort	2006-02-24 15:48:00.000000000 -0500
+@@ -0,0 +1 @@
++993
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/type mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/type
+--- e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/type	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/db/configuration/defaults/imaps/type	2006-02-24 15:48:00.000000000 -0500
+@@ -0,0 +1 @@
++service
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	2006-02-24 15:31:29.000000000 -0500
+@@ -0,0 +1,2 @@
++IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
++export IMAP_CAPABILITY
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES	2006-02-24 15:22:42.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $concurrency = $imap{ConcurrencyLimit};
++    "INSTANCES=$concurrency";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES_PER_IP mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES_PER_IP
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES_PER_IP	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/INSTANCES_PER_IP	2006-02-24 15:22:56.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $concurrency = $imap{ConcurrencyLimitPerIP};
++    "INSTANCES_PER_IP=$concurrency";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/ulimitdata mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/ulimitdata
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/ulimitdata	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/config/ulimitdata	2006-02-24 15:23:07.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $ulimit = $imap{ProcessMemoryLimit} || "128000000";
++    "ulimitdata=$ulimit";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/concurrency mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/concurrency
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/concurrency	2003-06-23 18:44:44.000000000 -0400
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/concurrency	1969-12-31 19:00:00.000000000 -0500
+@@ -1,4 +0,0 @@
+-{
+-    my $concurrency = $imap{ConcurrencyLimit} || "20";
+-    "$concurrency";
+-}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/ulimitdata mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/ulimitdata
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/ulimitdata	2003-06-23 18:44:44.000000000 -0400
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imap/runenv/ulimitdata	1969-12-31 19:00:00.000000000 -0500
+@@ -1,4 +0,0 @@
+-{
+-    my $ulimit = $imap{ProcessMemoryLimit} || "128000000";
+-    "$ulimit";
+-}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	2006-02-24 15:36:22.000000000 -0500
+@@ -0,0 +1,2 @@
++IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
++export IMAP_CAPABILITY
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES	2006-02-24 15:24:14.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $concurrency = $imaps{ConcurrencyLimit};
++    "INSTANCES=$concurrency";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES_PER_IP mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES_PER_IP
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES_PER_IP	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/INSTANCES_PER_IP	2006-02-24 15:24:19.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $concurrency = $imaps{ConcurrencyLimitPerIP};
++    "INSTANCES_PER_IP=$concurrency";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/ulimitdata mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/ulimitdata
+--- e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/ulimitdata	1969-12-31 19:00:00.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/etc/e-smith/templates/var/service/imaps/config/ulimitdata	2006-02-24 15:24:25.000000000 -0500
+@@ -0,0 +1,4 @@
++{
++    my $ulimit = $imaps{ProcessMemoryLimit} || "128000000";
++    "ulimitdata=$ulimit";
++}
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/var/service/imap/run mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/run
+--- e-smith-imap-1.3.1/root/var/service/imap/run	2006-02-24 15:48:06.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/run	2006-02-24 15:31:55.000000000 -0500
+@@ -1,7 +1,5 @@
+ #!/bin/sh
+ 
+-eval $(env - /usr/local/bin/envdir ./runenv /usr/bin/env)
+-
+ exec 2>&1
+ # Ensure that PRNG is adequately seeded.
+ [ -s ./ssl/seed ] ||\
+@@ -9,6 +7,7 @@
+     /bin/dd if=/dev/urandom of=./ssl/seed bs=1k count=1
+ # Configure ACLs
+ ./control/1
++. ./config
+ exec \
+   softlimit -m "${ulimitdata:-20000000}" \
+     /usr/bin/tcpsvd \
+@@ -33,4 +32,4 @@
+ 	    -F 3 \
+ 	    -makesock_connect_to \
+ 		/usr/bin/imapfront-auth \
+-		  "${imapdpath:-/usr/libexec/dovecot/imap}"
++		  /service/imap/imapd
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/var/service/imap/runenv/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/runenv/IMAP_CAPABILITY
+--- e-smith-imap-1.3.1/root/var/service/imap/runenv/IMAP_CAPABILITY	2006-02-24 15:48:06.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/runenv/IMAP_CAPABILITY	1969-12-31 19:00:00.000000000 -0500
+@@ -1 +0,0 @@
+-"AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/var/service/imap/runenv/imapdpath mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/runenv/imapdpath
+--- e-smith-imap-1.3.1/root/var/service/imap/runenv/imapdpath	2004-05-14 17:26:18.000000000 -0400
++++ mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imap/runenv/imapdpath	1969-12-31 19:00:00.000000000 -0500
+@@ -1 +0,0 @@
+-/service/imap/imapd
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.3.1/root/var/service/imaps/run mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imaps/run
+--- e-smith-imap-1.3.1/root/var/service/imaps/run	2006-02-24 15:48:06.000000000 -0500
++++ mezzanine_patched_e-smith-imap-1.3.1/root/var/service/imaps/run	2006-02-24 15:32:42.000000000 -0500
+@@ -2,8 +2,7 @@
+ 
+ exec 2>&1
+ 
+-eval $(env - /usr/local/bin/envdir ./runenv /usr/bin/env)
+-
++. ./config
+ exec  softlimit -m "${ulimitdata:-20000000}" \
+     /usr/bin/tcpsvd \
+ 	-v \

@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.3.1
-%define release 16
+%define release 17
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -20,6 +20,7 @@ Patch7: e-smith-imap-1.3.1-12.mitel_patch
 Patch8: e-smith-imap-1.3.1-13.mitel_patch
 Patch9: e-smith-imap-1.3.1-14.mitel_patch
 Patch10: e-smith-imap-1.3.1-merge_maildirs.patch
+Patch11: e-smith-imap-1.3.1-concurrency_control.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -42,6 +43,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Fri Feb 24 2006 Charlie Brady <charlie_brady@mitel.com> 1.3.1-17
+- Add default initializers for imap & imaps db records. [SME: 561]
+- Add db driven global and per IP concurrency controls. [SME: 884]
+
 * Fri Feb 24 2006 Gordon Rowell <gordonr@gormand.com.au> 1.3.1-16
 - Add /sbin/e-smith/merge_maildirs which can be run if you need
   to merge two maildirs [SME: 875]
@@ -318,6 +323,7 @@ Module for configuring the IMAP server
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 %build
 perl createlinks
@@ -336,9 +342,9 @@ mkdir -p $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imap/peers
 touch $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imap/peers/{0,local}/template-begin
 touch $RPM_BUILD_ROOT/var/service/imap/ssl/seed
 
-mkdir -p $RPM_BUILD_ROOT/var/service/imap/runenv/
-echo %{stunnelid} > $RPM_BUILD_ROOT/var/service/imap/runenv/SSLUID
-echo %{stunnelid} > $RPM_BUILD_ROOT/var/service/imap/runenv/SSLGID
+mkdir -p $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imap/config
+echo SSLUID=%{stunnelid} > $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imap/config/SSLUID
+echo SSLGID=%{stunnelid} > $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imap/config/SSLGID
 
 ln -s /var/service/imaps $RPM_BUILD_ROOT/service/imaps
 
@@ -346,9 +352,9 @@ mkdir -p $RPM_BUILD_ROOT/var/log/imaps
 touch $RPM_BUILD_ROOT/var/service/imaps/down
 mkdir -p $RPM_BUILD_ROOT/var/service/imaps/peers
 
-mkdir -p $RPM_BUILD_ROOT/var/service/imaps/runenv/
-echo %{stunnelid} > $RPM_BUILD_ROOT/var/service/imaps/runenv/SSLUID
-echo %{stunnelid} > $RPM_BUILD_ROOT/var/service/imaps/runenv/SSLGID
+mkdir -p $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imaps/config
+echo SSLUID=%{stunnelid} > $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imaps/config/SSLUID
+echo SSLGID=%{stunnelid} > $RPM_BUILD_ROOT/etc/e-smith/templates/var/service/imaps/config/SSLGID
 
 /sbin/e-smith/genfilelist $RPM_BUILD_ROOT \
     --dir /var/service/imap 'attr(1755,root,root)' \
