@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.3.1
-%define release 15
+%define release 16
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -19,6 +19,7 @@ Patch6: e-smith-imap-1.3.1-11.mitel_patch
 Patch7: e-smith-imap-1.3.1-12.mitel_patch
 Patch8: e-smith-imap-1.3.1-13.mitel_patch
 Patch9: e-smith-imap-1.3.1-14.mitel_patch
+Patch10: e-smith-imap-1.3.1-merge_maildirs.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -41,6 +42,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Fri Feb 24 2006 Gordon Rowell <gordonr@gormand.com.au> 1.3.1-16
+- Add /sbin/e-smith/merge_maildirs which can be run if you need
+  to merge two maildirs [SME: 875]
+
 * Wed Nov 30 2005 Gordon Rowell <gordonr@gormand.com.au> 1.3.1-15
 - Bump release number only
 
@@ -312,6 +317,7 @@ Module for configuring the IMAP server
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 perl createlinks
@@ -364,6 +370,7 @@ echo %{stunnelid} > $RPM_BUILD_ROOT/var/service/imaps/runenv/SSLGID
     --dir /var/service/imaps/log 'attr(0755,root,root)' \
     --file /var/service/imaps/log/run 'attr(0755,root,root)' \
     --dir /var/log/imaps 'attr(0755,imaplog,imaplog)' \
+    --file /sbin/e-smith/merge_maildirs 'attr(0755,root,root)' \
     > %{name}-%{version}-%{release}-filelist
 
 %pre
