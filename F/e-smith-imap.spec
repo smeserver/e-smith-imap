@@ -1,26 +1,14 @@
 Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
-%define version 1.3.1
-%define release 17
+%define version 1.4.0
+%define release 01
 Version: %{version}
 Release: %{release}
 License: GPL
 Vendor: Mitel Networks Corporation
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
-Patch0: e-smith-imap-1.3.1-02.mitel_patch
-Patch1: e-smith-imap-1.3.1-03.mitel_patch
-Patch2: e-smith-imap-1.3.1-05.mitel_patch
-Patch3: e-smith-imap-1.3.1-06.mitel_patch
-Patch4: e-smith-imap-1.3.1-07.mitel_patch
-Patch5: e-smith-imap-1.3.1-08.mitel_patch
-Patch6: e-smith-imap-1.3.1-11.mitel_patch
-Patch7: e-smith-imap-1.3.1-12.mitel_patch
-Patch8: e-smith-imap-1.3.1-13.mitel_patch
-Patch9: e-smith-imap-1.3.1-14.mitel_patch
-Patch10: e-smith-imap-1.3.1-merge_maildirs.patch
-Patch11: e-smith-imap-1.3.1-concurrency_control.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -43,6 +31,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Tue Mar 14 2006 Charlie Brady <charlie_brady@mitel.com> 1.4.0-01
+- Roll stable stream version. [SME: 1016]
+
 * Fri Feb 24 2006 Charlie Brady <charlie_brady@mitel.com> 1.3.1-17
 - Add default initializers for imap & imaps db records. [SME: 561]
 - Add db driven global and per IP concurrency controls. [SME: 884]
@@ -312,18 +303,6 @@ Module for configuring the IMAP server
 
 %prep
 %setup
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
 
 %build
 perl createlinks
