@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 02
+%define release 03
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -10,6 +10,7 @@ Vendor: Mitel Networks Corporation
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
 Patch0: e-smith-imap-1.4.0-concurrency_control.patch
+Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -32,6 +33,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Fri Mar 24 2006 Charlie Brady <charlie_brady@mitel.com> 1.4.0-03
+- Ensure that imaps is started or stopped if required, during
+  email-update event. [SME: 1125]
+
 * Sun Mar 19 2006 Charlie Brady <charlie_brady@mitel.com> 1.4.0-02
 - Fix per IP concurrency control. [SME: 1081]
 
@@ -308,6 +313,7 @@ Module for configuring the IMAP server
 %prep
 %setup
 %patch0 -p1
+%patch1 -p1
 
 %build
 perl createlinks
