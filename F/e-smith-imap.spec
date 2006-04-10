@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 04
+%define release 05
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -12,6 +12,7 @@ Source: %{name}-%{version}.tar.gz
 Patch0: e-smith-imap-1.4.0-concurrency_control.patch
 Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
 Patch2: e-smith-imap-1.4.0-concurrency_per_ip_twelve.patch
+Patch3: e-smith-imap-1.4.0-seedperms.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -34,6 +35,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Mon Apr 10 2006 Charlie Brady <charlie_brady@mitel.com> 1.4.0-05
+- Fix permissions of ssl seed file. [SME: 1105]
+
 * Fri Apr 7 2006 Gordon Rowell <gordonr@gormand.com.au> 1.4.0-04
 - Bump imap[s] ConcurrencyLimitPerIP defaults from six to twelve [SME: 1211]
 
@@ -319,6 +323,7 @@ Module for configuring the IMAP server
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 perl createlinks

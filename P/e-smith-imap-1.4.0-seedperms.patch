@@ -1,0 +1,13 @@
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/var/service/imap/run mezzanine_patched_e-smith-imap-1.4.0/root/var/service/imap/run
+--- e-smith-imap-1.4.0/root/var/service/imap/run	2006-04-10 10:26:20.000000000 -0400
++++ mezzanine_patched_e-smith-imap-1.4.0/root/var/service/imap/run	2006-04-10 10:03:38.000000000 -0400
+@@ -3,8 +3,8 @@
+ exec 2>&1
+ # Ensure that PRNG is adequately seeded.
+ [ -s ./ssl/seed ] ||\
+-  /usr/local/bin/envuidgid stunnel \
+     /bin/dd if=/dev/urandom of=./ssl/seed bs=1k count=1
++chown stunnel.stunnel ./ssl/seed
+ # Configure ACLs
+ ./control/1
+ . ./config
