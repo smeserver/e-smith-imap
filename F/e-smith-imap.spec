@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 05
+%define release 06
 Version: %{version}
 Release: %{release}
 License: GPL
@@ -13,6 +13,7 @@ Patch0: e-smith-imap-1.4.0-concurrency_control.patch
 Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
 Patch2: e-smith-imap-1.4.0-concurrency_per_ip_twelve.patch
 Patch3: e-smith-imap-1.4.0-seedperms.patch
+Patch4: e-smith-imap-1.4.0-subscriptionsfile.patch
 Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
@@ -35,6 +36,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Mon Aug 28 2006 Gordon Rowell <gordonr@gormand.com.au> 1.4.0-06
+- Remove ~/ from start of lines in .subscriptions file [SME: 1881]
+
 * Mon Apr 10 2006 Charlie Brady <charlie_brady@mitel.com> 1.4.0-05
 - Fix permissions of ssl seed file. [SME: 1105]
 
@@ -324,6 +328,7 @@ Module for configuring the IMAP server
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 perl createlinks
