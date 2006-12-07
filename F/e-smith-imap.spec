@@ -2,9 +2,10 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 06
+%define release 7
 Version: %{version}
-Release: %{release}
+Release: %smerelease %{release}
+Packager: %{_packager}
 License: GPL
 Vendor: Mitel Networks Corporation
 Group: Networking/Daemons
@@ -14,7 +15,6 @@ Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
 Patch2: e-smith-imap-1.4.0-concurrency_per_ip_twelve.patch
 Patch3: e-smith-imap-1.4.0-seedperms.patch
 Patch4: e-smith-imap-1.4.0-subscriptionsfile.patch
-Packager: e-smith developers <bugs@e-smith.com>
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
 Requires: ipsvd
@@ -36,6 +36,10 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Thu Dec 07 2006 Shad L. Lords <slords@mail.com>
+- Update to new release naming.  No functional changes.
+- Make Packager generic
+
 * Mon Aug 28 2006 Gordon Rowell <gordonr@gormand.com.au> 1.4.0-06
 - Remove ~/ from start of lines in .subscriptions file [SME: 1881]
 
