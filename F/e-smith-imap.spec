@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 7
+%define release 8
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -13,6 +13,7 @@ Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
 Patch2: e-smith-imap-1.4.0-concurrency_per_ip_twelve.patch
 Patch3: e-smith-imap-1.4.0-seedperms.patch
 Patch4: e-smith-imap-1.4.0-subscriptionsfile.patch
+Patch5: e-smith-imap-1.4.0-imap_capability.patch
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
 Requires: ipsvd
@@ -34,6 +35,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Fri May 18 2007 Shad L. Lords <slords@mail.com> 1.4.0-8
+- Determine imap capabilities from dovecot binary [SME: 2883]
+
 * Sun Apr 29 2007 Shad L. Lords <slords@mail.com>
 - Clean up spec so package can be built by koji/plague
 
@@ -334,6 +338,7 @@ Module for configuring the IMAP server
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 perl createlinks

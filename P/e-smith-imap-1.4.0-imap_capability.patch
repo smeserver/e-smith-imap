@@ -1,0 +1,80 @@
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY
+--- e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	2006-03-14 11:19:01.000000000 -0700
++++ mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	2007-05-18 18:50:07.000000000 -0600
+@@ -1,2 +1,35 @@
+-IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
++IMAP_CAPABILITY="AUTH=LOGIN {
++    my $open = open(CAPABILITY, "-|");
++    die "Fork failed: $!" unless defined $open;
++
++    if ($open)
++    {
++        $OUT = "DEFAULT";
++        while (<CAPABILITY>)
++        {
++            chomp;
++            if (/\* CAPABILITY (.*)/)
++            {
++                $OUT = $1;
++                last;
++            }
++        }
++    }
++    else
++    {
++        $open = open(IMAP, "|-");
++        die "Fork failed: $!" unless defined $open;
++        if ($open)
++        {
++            print IMAP "1 capability\n";
++            close IMAP;
++            exit;
++        }
++        else
++        {
++            $ENV{MAIL} = "maildir:./Maildir/";
++            exec "/usr/libexec/dovecot/imap";
++        }
++    }
++}"
+ export IMAP_CAPABILITY
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY
+--- e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	2006-03-14 11:19:01.000000000 -0700
++++ mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	2007-05-18 18:50:07.000000000 -0600
+@@ -1,2 +1,35 @@
+-IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
++IMAP_CAPABILITY="AUTH=LOGIN {
++    my $open = open(CAPABILITY, "-|");
++    die "Fork failed: $!" unless defined $open;
++
++    if ($open)
++    {
++        $OUT = "DEFAULT";
++        while (<CAPABILITY>)
++        {
++            chomp;
++            if (/\* CAPABILITY (.*)/)
++            {
++                $OUT = $1;
++                last;
++            }
++        }
++    }
++    else
++    {
++        $open = open(IMAP, "|-");
++        die "Fork failed: $!" unless defined $open;
++        if ($open)
++        {
++            print IMAP "1 capability\n";
++            close IMAP;
++            exit;
++        }
++        else
++        {
++            $ENV{MAIL} = "maildir:./Maildir/";
++            exec "/usr/libexec/dovecot/imap";
++        }
++    }
++}"
+ export IMAP_CAPABILITY
