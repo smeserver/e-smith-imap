@@ -1,7 +1,7 @@
 diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY
 --- e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	2006-03-14 11:19:01.000000000 -0700
 +++ mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imap/config/IMAP_CAPABILITY	2007-05-18 18:50:07.000000000 -0600
-@@ -1,2 +1,37 @@
+@@ -1,2 +1,38 @@
 -IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
 +IMAP_CAPABILITY="AUTH=LOGIN {
 +    my $open = open(CAPABILITY, "-|");
@@ -13,7 +13,7 @@ diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/v
 +        while (<CAPABILITY>)
 +        {
 +            chomp;
-+            s#\s##g;
++            s#\s$##g;
 +            if (/\* CAPABILITY (.*)/)
 +            {
 +                $OUT = $1;
@@ -33,9 +33,10 @@ diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/v
 +        }
 +        else
 +        {
++            undef $ENV;
 +            $ENV{USER} = "admin";
 +            $ENV{MAIL} = "maildir:./Maildir/";
-+            exec "/usr/libexec/dovecot/imap";
++            exec "/usr/libexec/dovecot/imap 2> /dev/null";
 +        }
 +    }
 +}"
@@ -43,7 +44,7 @@ diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/v
 diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY
 --- e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	2006-03-14 11:19:01.000000000 -0700
 +++ mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/templates/var/service/imaps/config/IMAP_CAPABILITY	2007-05-18 18:50:07.000000000 -0600
-@@ -1,2 +1,37 @@
+@@ -1,2 +1,38 @@
 -IMAP_CAPABILITY="AUTH=LOGIN SORT THREAD=REFERENCES MULTIAPPEND UNSELECT LITERAL+ IDLE CHILDREN LISTEXT LIST-SUBSCRIBED"
 +IMAP_CAPABILITY="AUTH=LOGIN {
 +    my $open = open(CAPABILITY, "-|");
@@ -55,7 +56,7 @@ diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/v
 +        while (<CAPABILITY>)
 +        {
 +            chomp;
-+            s#\s##g;
++            s#\s$##g;
 +            if (/\* CAPABILITY (.*)/)
 +            {
 +                $OUT = $1;
@@ -75,9 +76,10 @@ diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/templates/v
 +        }
 +        else
 +        {
++            undef $ENV;
 +            $ENV{USER} = "admin";
 +            $ENV{MAIL} = "maildir:./Maildir/";
-+            exec "/usr/libexec/dovecot/imap";
++            exec "/usr/libexec/dovecot/imap 2> /dev/null";
 +        }
 +    }
 +}"
