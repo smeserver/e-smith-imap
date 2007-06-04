@@ -2,7 +2,7 @@ Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 1.4.0
-%define release 8
+%define release 9
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
@@ -35,6 +35,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Fri May 18 2007 Shad L. Lords <slords@mail.com> 1.4.0-9
+- Strip off last ^M from capabilities string [SME: 2883]
+
 * Fri May 18 2007 Shad L. Lords <slords@mail.com> 1.4.0-8
 - Determine imap capabilities from dovecot binary [SME: 2883]
 
