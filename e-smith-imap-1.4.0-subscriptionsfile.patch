@@ -1,0 +1,11 @@
+diff -Nur -x '*.orig' -x '*.rej' e-smith-imap-1.4.0/root/etc/e-smith/events/actions/imap-relocate-maildirs mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/events/actions/imap-relocate-maildirs
+--- e-smith-imap-1.4.0/root/etc/e-smith/events/actions/imap-relocate-maildirs	2006-03-15 05:19:01.000000000 +1100
++++ mezzanine_patched_e-smith-imap-1.4.0/root/etc/e-smith/events/actions/imap-relocate-maildirs	2006-08-28 14:48:31.427813599 +1000
+@@ -127,6 +127,7 @@
+ 	    {
+ 		s/^Mail\///;
+ 		s/[\/;]/./g;
++		s{^~/}{}g;
+ 		print NSUBS;
+ 	    }
+ 	    close NSUBS;
