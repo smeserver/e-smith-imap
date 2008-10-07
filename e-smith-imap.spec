@@ -1,19 +1,15 @@
+# $Id: e-smith-imap.spec,v 1.2 2008/10/07 18:30:05 slords Exp $
+
 Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
-%define version 1.4.0
-%define release 9
+%define version 2.2.0
+%define release 1
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
-Patch0: e-smith-imap-1.4.0-concurrency_control.patch
-Patch1: e-smith-imap-1.4.0-startstop_imaps.patch
-Patch2: e-smith-imap-1.4.0-concurrency_per_ip_twelve.patch
-Patch3: e-smith-imap-1.4.0-seedperms.patch
-Patch4: e-smith-imap-1.4.0-subscriptionsfile.patch
-Patch5: e-smith-imap-1.4.0-imap_capability.patch
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
 Requires: ipsvd
@@ -35,6 +31,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Tue Oct 7 2008 Shad L. Lords <slords@mail.com> 2.2.0-1.sme
+- Roll new stream to separate sme7/sme8 trees [SME: 4633]
+
 * Fri May 18 2007 Shad L. Lords <slords@mail.com> 1.4.0-9
 - Strip off last ^M from capabilities string [SME: 2883]
 
@@ -336,12 +335,6 @@ Module for configuring the IMAP server
 
 %prep
 %setup
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 %build
 perl createlinks
