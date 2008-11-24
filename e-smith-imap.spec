@@ -1,15 +1,16 @@
-# $Id: e-smith-imap.spec,v 1.2 2008/10/07 18:30:05 slords Exp $
+# $Id: e-smith-imap.spec,v 1.3 2008/11/24 22:53:41 slords Exp $
 
 Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 2.0.0
-%define release 1
+%define release 2
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
+Patch1: e-smith-imap-2.0.0-urandom.patch
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
 Requires: ipsvd
@@ -31,6 +32,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Mon Nov 24 2008 Shad L. Lords <slords@mail.com> 2.0.0-2.sme
+- Create chroot dev/urandom for stunnel to use [SME: 1105]
+
 * Tue Oct 7 2008 Shad L. Lords <slords@mail.com> 2.0.0-1.sme
 - Roll new stream to separate sme7/sme8 trees [SME: 4633]
 
@@ -335,6 +339,7 @@ Module for configuring the IMAP server
 
 %prep
 %setup
+%patch1 -p1
 
 %build
 perl createlinks
