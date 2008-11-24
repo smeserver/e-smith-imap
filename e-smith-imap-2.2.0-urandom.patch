@@ -1,0 +1,23 @@
+--- e-smith-imap-2.2.0/root/var/service/imap/run.urandom	2008-10-07 11:35:56.000000000 -0600
++++ e-smith-imap-2.2.0/root/var/service/imap/run	2008-11-24 15:49:05.000000000 -0700
+@@ -1,10 +1,8 @@
+ #!/bin/sh
+ 
+ exec 2>&1
+-# Ensure that PRNG is adequately seeded.
+-[ -s ./ssl/seed ] ||\
+-    /bin/dd if=/dev/urandom of=./ssl/seed bs=1k count=1
+-chown stunnel.stunnel ./ssl/seed
++# Ensure that urandom device exists
++[ -c ssl/dev/urandom ] || mknod ssl/dev/urandom c 1 9
+ # Configure ACLs
+ ./control/1
+ . ./config
+@@ -25,7 +22,6 @@
+ 	    -g "$SSLGID" \
+ 	    -N imap \
+ 	    -i \
+-	    -R seed \
+ 	    -p imapd.pem \
+ 	    -n imap- \
+ 	    -f \
