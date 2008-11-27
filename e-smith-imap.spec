@@ -1,16 +1,17 @@
-# $Id: e-smith-imap.spec,v 1.3 2008/11/24 22:53:41 slords Exp $
+# $Id: e-smith-imap.spec,v 1.4 2008/11/27 08:40:54 filippocarletti Exp $
 
 Summary: Module for configuring the IMAP server
 %define name e-smith-imap
 Name: %{name}
 %define version 2.2.0
-%define release 2
+%define release 3
 Version: %{version}
 Release: %{release}%{?dist}
 License: GPL
 Group: Networking/Daemons
 Source: %{name}-%{version}.tar.gz
 Patch1: e-smith-imap-2.2.0-urandom.patch
+Patch2: e-smith-imap-2.2.0-urandomToSpecfile.patch
 BuildRoot: /var/tmp/%{name}-%{version}-%{release}-buildroot
 Requires: daemontools
 Requires: ipsvd
@@ -32,6 +33,9 @@ AutoReqProv: no
 Module for configuring the IMAP server
 
 %changelog
+* Tue Nov 25 2008 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> 2.2.0-3.sme
+- Move creation of chrooted dev/urandom to spec-file [SME: 1105]
+
 * Mon Nov 24 2008 Shad L. Lords <slords@mail.com> 2.2.0-2.sme
 - Create chroot dev/urandom for stunnel to use [SME: 1105]
 
@@ -340,6 +344,7 @@ Module for configuring the IMAP server
 %prep
 %setup
 %patch1 -p1
+%patch2 -p1
 
 %build
 perl createlinks
@@ -410,3 +415,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}-%{version}-%{release}-filelist
 %defattr(-,root,root)
+%attr(0444,root,root) %dev(c,1,9) /var/service/imap/ssl/dev/urandom

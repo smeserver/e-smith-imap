@@ -1,0 +1,12 @@
+diff -urN e-smith-imap-2.0.0.orig/root/var/service/imap/run e-smith-imap-2.0.0/root/var/service/imap/run
+--- e-smith-imap-2.0.0.orig/root/var/service/imap/run	2008-11-25 17:31:12.000000000 +0100
++++ e-smith-imap-2.0.0/root/var/service/imap/run	2008-11-25 17:30:37.000000000 +0100
+@@ -1,8 +1,6 @@
+ #!/bin/sh
+ 
+ exec 2>&1
+-# Ensure that urandom device exists
+-[ -c ssl/dev/urandom ] || mknod ssl/dev/urandom c 1 9
+ # Configure ACLs
+ ./control/1
+ . ./config
